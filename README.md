@@ -40,6 +40,8 @@ to_space/
 ├── app.py                 # Flask application
 ├── requirements.txt       # Python dependencies
 ├── votes.json            # Vote storage (auto-created)
+├── doc/                  # general documentation from museum regarding project.
+├── fonts/                # fonts for hebrew and arabic.
 ├── static/
 │   ├── css/
 │   │   ├── main.css      # Main stylesheet
