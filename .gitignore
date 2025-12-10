@@ -30,7 +30,7 @@ ENV/
 env/
 .ENV/
 .env/
-
+static/images/*
 # IDE
 .vscode/
 .idea/
