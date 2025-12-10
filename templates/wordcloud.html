@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="wordCloud">Word Cloud</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title" data-i18n="wordCloud">Word Cloud</h1>
+            <div class="language-switcher">
+                <button class="lang-btn" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="he">עב</button>
+                <button class="lang-btn" data-lang="ar">ع</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="wordcloud-container">
+                <div id="wordcloud-wrapper">
+                    <img id="wordcloud-image" src="{{ url_for('static', filename='images/wordcloud.png') }}" alt="Word Cloud">
+                    <div id="loading-message" class="loading" data-i18n="loading">Loading...</div>
+                    <div id="no-votes-message" class="no-votes" data-i18n="noVotes" style="display: none;">No votes yet. Be the first to vote!</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-back" id="back-btn" data-i18n="backToSelection">Back to Selection</button>
+                <button class="btn btn-refresh" id="refresh-btn">Refresh</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        // Word cloud specific functionality
+        // Wait for app.js to initialize before setting up word cloud
+        let currentLang = localStorage.getItem('language') || 'en';
+        let wordcloudInitialized = false;
+        
+        function updateWordCloud() {
+            const img = document.getElementById('wordcloud-image');
+            const loading = document.getElementById('loading-message');
+            const noVotes = document.getElementById('no-votes-message');
+            
+            loading.style.display = 'block';
+            img.style.display = 'none';
+            noVotes.style.display = 'none';
+            
+            fetch(`/api/wordcloud?lang=${currentLang}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        img.src = data.path + '?t=' + new Date().getTime();
+                        img.onload = () => {
+                            loading.style.display = 'none';
+                            img.style.display = 'block';
+                        };
+                        img.onerror = () => {
+                            loading.style.display = 'none';
+                            noVotes.style.display = 'block';
+                        };
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading word cloud:', error);
+                    loading.style.display = 'none';
+                    noVotes.style.display = 'block';
+                });
+        }
+        
+        function initializeWordCloud() {
+            if (wordcloudInitialized) return;
+            wordcloudInitialized = true;
+            
+            document.getElementById('refresh-btn').addEventListener('click', updateWordCloud);
+            document.getElementById('back-btn').addEventListener('click', () => {
+                window.location.href = '/';
+            });
+            
+            // Update word cloud when language changes
+            document.addEventListener('languageChanged', (e) => {
+                currentLang = e.detail.language;
+                updateWordCloud();
+            });
+            
+            // Initial load - wait a bit for translations to load
+            setTimeout(() => {
+                updateWordCloud();
+            }, 100);
+        }
+        
+        // Initialize after DOM and app.js are ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeWordCloud);
+        } else {
+            setTimeout(initializeWordCloud, 200);
+        }
+    </script>
+</body>
+</html>
+

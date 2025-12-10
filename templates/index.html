@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="selectionPage">What would you take to space?</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/grid.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title" data-i18n="selectionPage">What would you take to space?</h1>
+            <div class="language-switcher">
+                <button class="lang-btn" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="he">עב</button>
+                <button class="lang-btn" data-lang="ar">ع</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="selection-info">
+                <div class="selection-counter">
+                    <span data-i18n="selected">Selected</span>: 
+                    <span class="count"><span id="current-count">0</span>/3</span>
+                </div>
+                <button class="btn btn-clear" id="clear-btn" data-i18n="clearAll">Clear All</button>
+            </div>
+
+            <div class="objects-grid" id="objects-grid">
+                <!-- Items will be dynamically generated here -->
+            </div>
+
+            <div class="submit-container">
+                <button class="btn btn-submit" id="submit-btn" data-i18n="goToCloud" disabled>Submit</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
+

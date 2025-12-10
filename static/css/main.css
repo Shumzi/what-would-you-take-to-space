@@ -1,0 +1,372 @@
+/* ============================================
+   DESIGNER-FRIENDLY CSS VARIABLES
+   Modify these values to customize the design
+   ============================================ */
+
+:root {
+  /* Colors */
+  --primary-color: #3498db;
+  --primary-hover: #2980b9;
+  --secondary-color: #95a5a6;
+  --danger-color: #e74c3c;
+  --danger-hover: #c0392b;
+  --success-color: #27ae60;
+  --background-color: #ffffff;
+  --surface-color: #f8f9fa;
+  --border-color: #dfe6e9;
+  --text-color: #2c3e50;
+  --text-light: #7f8c8d;
+  
+  /* Typography */
+  --font-family-en: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-family-he: 'DavidLibre-Regular', 'David Libre', serif;
+  --font-family-ar: 'NotoSansArabic', 'Noto Sans Arabic', sans-serif;
+  --font-size-base: 16px;
+  --font-size-title: 2rem;
+  --font-size-large: 1.25rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}
+
+/* ============================================
+   FONT FACES
+   ============================================ */
+
+@font-face {
+  font-family: 'DavidLibre-Regular';
+  src: url('../../fonts/DavidLibre-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DavidLibre-Medium';
+  src: url('../../fonts/DavidLibre-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DavidLibre-Bold';
+  src: url('../../fonts/DavidLibre-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NotoSansArabic';
+  src: url('../../fonts/NotoSansArabic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-en);
+  font-size: var(--font-size-base);
+  color: var(--text-color);
+  background-color: var(--surface-color);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .language-switcher {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .selection-info {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .actions {
+  flex-direction: row-reverse;
+}
+
+/* Language-specific font families */
+html[lang="he"] body {
+  font-family: var(--font-family-he);
+}
+
+html[lang="ar"] body {
+  font-family: var(--font-family-ar);
+}
+
+/* ============================================
+   CONTAINER & LAYOUT
+   ============================================ */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md) 0;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.title {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-color);
+}
+
+.main-content {
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================
+   LANGUAGE SWITCHER
+   ============================================ */
+
+.language-switcher {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.lang-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-base);
+}
+
+.lang-btn:hover {
+  border-color: var(--primary-color);
+  background-color: var(--surface-color);
+}
+
+.lang-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* ============================================
+   SELECTION INFO
+   ============================================ */
+
+.selection-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.selection-counter {
+  font-size: var(--font-size-large);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color);
+}
+
+.selection-counter .count {
+  font-weight: var(--font-weight-bold);
+  color: var(--primary-color);
+  margin-left: var(--spacing-xs);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-family: inherit;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-clear {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-clear:hover:not(:disabled) {
+  background-color: var(--danger-hover);
+}
+
+.btn-submit {
+  background-color: var(--primary-color);
+  color: white;
+  font-size: var(--font-size-large);
+  font-weight: var(--font-weight-bold);
+  padding: var(--spacing-md) var(--spacing-xl);
+  width: 100%;
+  max-width: 300px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-back,
+.btn-refresh {
+  background-color: var(--secondary-color);
+  color: white;
+  margin: 0 var(--spacing-xs);
+}
+
+.btn-back:hover,
+.btn-refresh:hover {
+  background-color: #7f8c8d;
+}
+
+/* ============================================
+   SUBMIT CONTAINER
+   ============================================ */
+
+.submit-container {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ============================================
+   WORD CLOUD PAGE
+   ============================================ */
+
+.wordcloud-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  margin: var(--spacing-lg) 0;
+}
+
+#wordcloud-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+}
+
+#wordcloud-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.loading,
+.no-votes {
+  text-align: center;
+  padding: var(--spacing-xl);
+  font-size: var(--font-size-large);
+  color: var(--text-light);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  :root {
+    --font-size-title: 1.5rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+  }
+  
+  .container {
+    padding: var(--spacing-sm);
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+  
+  .language-switcher {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .selection-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .btn-submit {
+    width: 100%;
+  }
+}
+

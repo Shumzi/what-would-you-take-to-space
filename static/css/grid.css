@@ -1,0 +1,167 @@
+/* ============================================
+   GRID LAYOUT STYLES
+   Designer-friendly grid customization
+   ============================================ */
+
+:root {
+  /* Grid Configuration */
+  --grid-columns: 5;
+  --grid-gap: 1rem;
+  --grid-item-padding: 1.5rem 1rem;
+  --grid-item-min-height: 100px;
+  
+  /* Grid Item States */
+  --item-bg-default: #f8f9fa;
+  --item-bg-hover: #e9ecef;
+  --item-bg-selected: #e3f2fd;
+  --item-border-default: #dfe6e9;
+  --item-border-selected: #3498db;
+  --item-text-color: #2c3e50;
+  --item-text-selected: #3498db;
+}
+
+/* ============================================
+   OBJECTS GRID
+   ============================================ */
+
+.objects-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gap);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ============================================
+   GRID ITEMS (BUTTONS)
+   ============================================ */
+
+.grid-item {
+  background-color: var(--item-bg-default);
+  border: 2px solid var(--item-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--grid-item-padding);
+  min-height: var(--grid-item-min-height);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--item-text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  font-family: inherit;
+}
+
+.grid-item:hover:not(:disabled) {
+  background-color: var(--item-bg-hover);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.grid-item.selected {
+  background-color: var(--item-bg-selected);
+  border-color: var(--item-border-selected);
+  color: var(--item-text-selected);
+  font-weight: var(--font-weight-bold);
+}
+
+.grid-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.grid-item:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Selection indicator (optional visual enhancement) */
+.grid-item.selected::before {
+  content: '✓';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+}
+
+[dir="rtl"] .grid-item.selected::before {
+  right: auto;
+  left: 0.5rem;
+}
+
+/* ============================================
+   RESPONSIVE GRID
+   ============================================ */
+
+/* Tablet: 4 columns */
+@media (max-width: 1024px) {
+  .objects-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Mobile: 2 columns */
+@media (max-width: 768px) {
+  .objects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    --grid-gap: 0.75rem;
+    --grid-item-padding: 1rem 0.75rem;
+    --grid-item-min-height: 80px;
+  }
+  
+  .grid-item {
+    font-size: 0.875rem;
+  }
+}
+
+/* Small mobile: 1 column */
+@media (max-width: 480px) {
+  .objects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   CUSTOM GRID LAYOUTS
+   For 14 items, you can use a custom layout:
+   ============================================ */
+
+/* Option 1: 5 columns, 3 rows (with 1 empty cell) */
+.objects-grid.layout-5x3 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* Option 2: 4 columns, 4 rows (with 2 empty cells) */
+.objects-grid.layout-4x4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Option 3: 7 columns, 2 rows (perfect for 14 items) */
+.objects-grid.layout-7x2 {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .objects-grid.layout-7x2 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .objects-grid.layout-7x2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
