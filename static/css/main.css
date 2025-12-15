@@ -57,29 +57,43 @@
 
 @font-face {
   font-family: 'DavidLibre-Regular';
-  src: url('../../fonts/DavidLibre-Regular.ttf') format('truetype');
+  src: url('/fonts/DavidLibre-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'DavidLibre-Medium';
-  src: url('../../fonts/DavidLibre-Medium.ttf') format('truetype');
+  src: url('/fonts/DavidLibre-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'DavidLibre-Bold';
-  src: url('../../fonts/DavidLibre-Bold.ttf') format('truetype');
+  src: url('/fonts/DavidLibre-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'NotoSansArabic';
-  src: url('../../fonts/NotoSansArabic.ttf') format('truetype');
+  src: url('/fonts/NotoSansArabic.ttf') format('truetype');
   font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'EzerEuro-Medium';
+  src: url('/fonts/EzerEuro-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cairo-VariableFont';
+  src: url('/fonts/Cairo-VariableFont.ttf') format('truetype');
+  font-weight: 700;
   font-style: normal;
 }
 
@@ -94,7 +108,6 @@
 }
 
 body {
-  font-family: var(--font-family-en);
   font-size: var(--font-size-base);
   color: var(--text-color);
   background-color: var(--surface-color);
@@ -125,13 +138,18 @@ body {
   flex-direction: row-reverse;
 }
 
-/* Language-specific font families */
-html[lang="he"] body {
-  font-family: var(--font-family-he);
+/* Global wordcloud fonts based on language */
+html[lang="he"] body,
+html[lang="en"] body,
+html[lang="he"] *,
+html[lang="en"] * {
+  font-family: EzerEuro-Medium, DavidLibre-Medium, serif;
 }
 
-html[lang="ar"] body {
-  font-family: var(--font-family-ar);
+html[lang="ar"] body,
+html[lang="ar"] * {
+  font-family: Cairo-VariableFont, NotoSansArabic, sans-serif;
+  font-weight: 700; /* Bold for Arabic to match other fonts */
 }
 
 /* ============================================
@@ -186,6 +204,17 @@ html[lang="ar"] body {
   cursor: pointer;
   transition: all var(--transition-fast);
   font-size: var(--font-size-base);
+}
+
+/* Language switcher buttons always use their specific fonts */
+.lang-btn[data-lang="en"],
+.lang-btn[data-lang="he"] {
+  font-family: EzerEuro-Medium, DavidLibre-Medium, serif !important;
+}
+
+.lang-btn[data-lang="ar"] {
+  font-family: Cairo-VariableFont, NotoSansArabic, sans-serif !important;
+  font-weight: 700 !important;
 }
 
 .lang-btn:hover {

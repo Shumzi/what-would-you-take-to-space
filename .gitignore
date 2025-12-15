@@ -54,3 +54,7 @@ instance/
 Thumbs.db
 desktop.ini
 
+# Vote data and backup state
+votes.json
+backup_state.json
+

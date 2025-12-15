@@ -1,0 +1,7 @@
+{
+  "cloud_page_timeout_seconds": 180,
+  "reset_selection_timeout_seconds": 5,
+  "wordcloud_margin": 10,
+  "backup_interval_days": 7,
+  "logging_level": "INFO"
+}

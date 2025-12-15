@@ -1,13 +1,16 @@
 {
-  "item1": 8,
-  "item2": 6,
-  "item6": 3,
-  "item10": 7,
-  "item5": 3,
-  "item13": 5,
-  "item11": 6,
-  "item9": 5,
-  "item7": 2,
-  "item3": 1,
-  "item4": 1
+  "item1": 12,
+  "item2": 12,
+  "item6": 9,
+  "item10": 511,
+  "item5": 16,
+  "item13": 317,
+  "item11": 26,
+  "item9": 23,
+  "item7": 5,
+  "item3": 358,
+  "item4": 12,
+  "item12": 19,
+  "item8": 1,
+  "total_submissions": 27
 }

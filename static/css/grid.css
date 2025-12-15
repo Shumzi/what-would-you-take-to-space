@@ -51,7 +51,6 @@
   justify-content: center;
   text-align: center;
   position: relative;
-  font-family: inherit;
 }
 
 .grid-item:hover:not(:disabled) {

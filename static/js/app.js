@@ -13,6 +13,8 @@ const ITEM_IDS = Array.from({ length: TOTAL_ITEMS }, (_, i) => `item${i + 1}`);
 let currentLanguage = localStorage.getItem('language') || 'en';
 let translations = {};
 let selectedItems = [];
+let selectionResetTimer = null;
+let config = null;
 
 // ============================================
 // INITIALIZATION
@@ -25,6 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initializeApp() {
     await loadTranslations(currentLanguage);
     setupLanguageSwitcher();
+    
+    // Load configuration
+    try {
+        const response = await fetch('/api/config');
+        if (response.ok) {
+            config = await response.json();
+        }
+    } catch (error) {
+        console.error('Error loading config:', error);
+        // Use defaults if config fails to load
+        config = {
+            reset_selection_timeout_seconds: 300
+        };
+    }
     
     // Check if we're on the voting page or word cloud page
     if (document.getElementById('objects-grid')) {
@@ -114,6 +130,7 @@ function initializeVotingPage() {
     renderGrid();
     setupEventListeners();
     updateUI();
+    startSelectionResetTimer();
 }
 
 function renderGrid() {
@@ -156,6 +173,9 @@ function handleItemClick(itemId) {
     }
     
     updateUI();
+    
+    // Reset the selection timer on any item interaction (after updating UI)
+    startSelectionResetTimer();
 }
 
 function updateUI() {
@@ -205,6 +225,12 @@ function setupEventListeners() {
 async function handleSubmit() {
     if (selectedItems.length === 0) return;
     
+    // Clear timer when submitting
+    if (selectionResetTimer) {
+        clearTimeout(selectionResetTimer);
+        selectionResetTimer = null;
+    }
+    
     const submitBtn = document.getElementById('submit-btn');
     if (submitBtn) {
         submitBtn.disabled = true;
@@ -218,7 +244,8 @@ async function handleSubmit() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                items: selectedItems
+                items: selectedItems,
+                language: currentLanguage
             })
         });
         
@@ -246,8 +273,72 @@ async function handleSubmit() {
     }
 }
 
+function startSelectionResetTimer() {
+    // Clear existing timer if any
+    if (selectionResetTimer) {
+        clearTimeout(selectionResetTimer);
+        selectionResetTimer = null;
+    }
+    
+    // Only start timer if we have selections
+    if (selectedItems.length === 0) {
+        // No selections, no need for timer
+        return;
+    }
+    
+    // Get timeout from config (load if not available)
+    const getTimeout = () => {
+        if (config && config.reset_selection_timeout_seconds) {
+            return config.reset_selection_timeout_seconds * 1000;
+        }
+        // Default to 60 seconds if config not loaded yet
+        return 60 * 1000;
+    };
+    
+    const timeoutMs = getTimeout();
+    
+    console.log(`Starting selection reset timer: ${timeoutMs / 1000} seconds (${selectedItems.length} items selected)`);
+    
+    selectionResetTimer = setTimeout(() => {
+        console.log('Selection reset timer expired - clearing selections');
+        // Reset selections after timeout
+        selectedItems = [];
+        updateUI();
+        selectionResetTimer = null;
+    }, timeoutMs);
+    
+    // If config wasn't loaded, reload it and restart timer with correct value
+    if (!config || !config.reset_selection_timeout_seconds) {
+        fetch('/api/config')
+            .then(response => response.json())
+            .then(loadedConfig => {
+                config = loadedConfig;
+                // Restart timer with correct value
+                if (selectionResetTimer) {
+                    clearTimeout(selectionResetTimer);
+                }
+                const correctTimeoutMs = config.reset_selection_timeout_seconds * 1000;
+                console.log(`Restarting selection reset timer with correct value: ${config.reset_selection_timeout_seconds} seconds`);
+                selectionResetTimer = setTimeout(() => {
+                    console.log('Selection reset timer expired - clearing selections');
+                    selectedItems = [];
+                    updateUI();
+                    selectionResetTimer = null;
+                }, correctTimeoutMs);
+            })
+            .catch(error => {
+                console.error('Error loading config for selection reset timer:', error);
+            });
+    }
+}
+
 function handleClear() {
     selectedItems = [];
+    // Clear timer when manually clearing
+    if (selectionResetTimer) {
+        clearTimeout(selectionResetTimer);
+        selectionResetTimer = null;
+    }
     updateUI();
 }
 

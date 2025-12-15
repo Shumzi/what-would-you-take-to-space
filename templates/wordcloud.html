@@ -20,9 +20,8 @@
         <main class="main-content">
             <div class="wordcloud-container">
                 <div id="wordcloud-wrapper">
-                    <img id="wordcloud-image" src="{{ url_for('static', filename='images/wordcloud.png') }}" alt="Word Cloud">
+                    <img id="wordcloud-image" alt="Word Cloud" style="display: none;">
                     <div id="loading-message" class="loading" data-i18n="loading">Loading...</div>
-                    <div id="no-votes-message" class="no-votes" data-i18n="noVotes" style="display: none;">No votes yet. Be the first to vote!</div>
                 </div>
             </div>
 
@@ -39,35 +38,92 @@
         // Wait for app.js to initialize before setting up word cloud
         let currentLang = localStorage.getItem('language') || 'en';
         let wordcloudInitialized = false;
+        let redirectTimer = null;
         
         function updateWordCloud() {
             const img = document.getElementById('wordcloud-image');
             const loading = document.getElementById('loading-message');
-            const noVotes = document.getElementById('no-votes-message');
             
+            // Always show loading and hide image initially
             loading.style.display = 'block';
             img.style.display = 'none';
-            noVotes.style.display = 'none';
             
-            fetch(`/api/wordcloud?lang=${currentLang}`)
+            // Store old object URL to revoke after new image loads
+            const oldObjectUrl = img.src && img.src.startsWith('blob:') ? img.src : null;
+            img.src = '';
+            
+            // Add cache-busting timestamp to ensure fresh image
+            const timestamp = new Date().getTime();
+            
+            // First, generate/regenerate the wordcloud
+            fetch(`/api/wordcloud?lang=${currentLang}&t=${timestamp}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        img.src = data.path + '?t=' + new Date().getTime();
-                        img.onload = () => {
-                            loading.style.display = 'none';
-                            img.style.display = 'block';
-                        };
-                        img.onerror = () => {
-                            loading.style.display = 'none';
-                            noVotes.style.display = 'block';
-                        };
+                        // Wait a moment to ensure file is fully written to disk
+                        setTimeout(() => {
+                            // Load image as blob to bypass browser cache completely
+                            const imageUrl = data.path + '?t=' + timestamp;
+                            fetch(imageUrl, { cache: 'no-store' })
+                                .then(response => response.blob())
+                                .then(blob => {
+                                    // Create object URL from blob - this bypasses all caching
+                                    const objectUrl = URL.createObjectURL(blob);
+                                    img.src = objectUrl;
+                                    img.onload = () => {
+                                        // Revoke old object URL after new image loads successfully
+                                        if (oldObjectUrl) {
+                                            URL.revokeObjectURL(oldObjectUrl);
+                                        }
+                                        loading.style.display = 'none';
+                                        img.style.display = 'block';
+                                    };
+                                    img.onerror = () => {
+                                        URL.revokeObjectURL(objectUrl);
+                                        console.error('Error loading wordcloud image');
+                                        // Keep loading message visible on error
+                                    };
+                                })
+                                .catch(error => {
+                                    console.error('Error loading image blob:', error);
+                                    // Keep loading message visible on error
+                                });
+                        }, 100);
                     }
                 })
                 .catch(error => {
                     console.error('Error loading word cloud:', error);
-                    loading.style.display = 'none';
-                    noVotes.style.display = 'block';
+                    // Keep loading message visible on error
+                });
+        }
+        
+        function setupAutoRedirect() {
+            // Clear existing timer if any
+            if (redirectTimer) {
+                clearTimeout(redirectTimer);
+            }
+            
+            // Load config and set up redirect timer
+            fetch('/api/config')
+                .then(response => response.json())
+                .then(config => {
+                    const timeoutSeconds = config.cloud_page_timeout_seconds || 300;
+                    const timeoutMs = timeoutSeconds * 1000;
+                    
+                    console.log(`Setting redirect timer: ${timeoutSeconds} seconds`);
+                    
+                    redirectTimer = setTimeout(() => {
+                        console.log('Redirecting to main page...');
+                        window.location.href = '/';
+                    }, timeoutMs);
+                })
+                .catch(error => {
+                    console.error('Error loading config:', error);
+                    // Default to 60 seconds if config fails to load
+                    redirectTimer = setTimeout(() => {
+                        console.log('Redirecting to main page (fallback)...');
+                        window.location.href = '/';
+                    }, 60 * 1000);
                 });
         }
         
@@ -77,6 +133,9 @@
             
             document.getElementById('refresh-btn').addEventListener('click', updateWordCloud);
             document.getElementById('back-btn').addEventListener('click', () => {
+                if (redirectTimer) {
+                    clearTimeout(redirectTimer);
+                }
                 window.location.href = '/';
             });
             
@@ -86,11 +145,21 @@
                 updateWordCloud();
             });
             
+            // Set up auto-redirect timer
+            setupAutoRedirect();
+            
             // Initial load - wait a bit for translations to load
             setTimeout(() => {
                 updateWordCloud();
             }, 100);
         }
+        
+        // Clear timer on page unload
+        window.addEventListener('beforeunload', () => {
+            if (redirectTimer) {
+                clearTimeout(redirectTimer);
+            }
+        });
         
         // Initialize after DOM and app.js are ready
         if (document.readyState === 'loading') {
