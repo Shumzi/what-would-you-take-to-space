@@ -1,9 +1,9 @@
 {
-  "item1": 12,
-  "item2": 13,
-  "item6": 10,
+  "item1": 13,
+  "item2": 15,
+  "item6": 11,
   "item10": 511,
-  "item5": 17,
+  "item5": 19,
   "item13": 317,
   "item11": 26,
   "item9": 23,
@@ -12,5 +12,5 @@
   "item4": 12,
   "item12": 19,
   "item8": 1,
-  "total_submissions": 28
+  "total_submissions": 30
 }
